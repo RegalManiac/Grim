@@ -123,3 +123,10 @@ What makes Grim stand out against other anticheats?
 
 * All systems are designed to be highly secure and mathematically impossible to bypass
 * For example, the prediction engine knows all possible movements and cannot be bypassed
+
+### Velocity patch
+
+* To enable custom settings add this in your config file:
+* In Simulation parameter: disable-liquid-push: true/false
+* In Knockback parameter: disable-engine: true/false
+* In Explosion parameter: disable-engine: true/false
