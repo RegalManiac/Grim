@@ -34,6 +34,7 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
     private double maxAdv, immediate, ceiling, multiplier;
 
     private double threshold;
+    private boolean disableEngine;
 
     public KnockbackHandler(GrimPlayer player) {
         super(player);
@@ -160,6 +161,8 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
     }
 
     public void handlePredictionAnalysis(double offset) {
+        if (disableEngine) return;
+
         if (player.firstBreadKB != null) {
             player.firstBreadKB.offset = Math.min(player.firstBreadKB.offset, offset);
         }
@@ -171,6 +174,8 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
+        if (disableEngine) return;
+
         double offset = predictionComplete.getOffset();
         if (!predictionComplete.isChecked() || predictionComplete.getData().isTeleport()) {
             forceExempt();
@@ -247,6 +252,7 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
         immediate = config.getDoubleElse("Knockback.immediate-setback-threshold", 0.1);
         multiplier = config.getDoubleElse("Knockback.setback-decay-multiplier", 0.999);
         ceiling = config.getDoubleElse("Knockback.max-ceiling", 4);
+        disableEngine = config.getBooleanElse("Knockback.disable-engine", false);
         if (maxAdv < 0) maxAdv = Double.MAX_VALUE;
         if (immediate < 0) immediate = Double.MAX_VALUE;
     }

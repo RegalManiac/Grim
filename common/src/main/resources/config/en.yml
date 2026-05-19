@@ -85,6 +85,7 @@ Simulation:
     # Violation level threshold for setback
     # 1 for old behavior
     setback-violation-threshold: 1
+    disable-liquid-push: false
 
 # Checks to see if a player entered a block during a movement
 Phase:
@@ -133,10 +134,12 @@ Knockback:
     max-advantage: 1
     # This is to stop the player from gathering too many violations and never being able to clear them all
     max-ceiling: 4
+    disable-engine: false
 
 Explosion:
     threshold: 0.001
     setbackvl: 3
+    disable-engine: false
 
 TimerA:
     setbackvl: 10

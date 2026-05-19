@@ -278,6 +278,7 @@ public class GrimPlayer implements GrimUser {
     public boolean lastJumping;
     public EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(FluidTag.WATER, FluidTag.LAVA);
     public boolean canFloatWhileRidden = false;
+    public Vector3dm appliedLiquidPush = new Vector3dm();
 
     public GrimPlayer(@NotNull User user) {
         this.user = user;
@@ -442,6 +443,14 @@ public class GrimPlayer implements GrimUser {
     }
 
     public void baseTickAddVector(Vector3dm vector) {
+        boolean isSneak = (vector.getX() == 0.0 && vector.getZ() == 0.0 && vector.getY() == (double) -0.04f);
+        boolean isFly = (vector.getX() == 0.0 && vector.getZ() == 0.0 && vector.getY() == (this.flySpeed * -3));
+
+        if (!isSneak && !isFly) {
+            if (this.appliedLiquidPush == null) this.appliedLiquidPush = new Vector3dm();
+            this.appliedLiquidPush.add(vector);
+        }
+
         clientVelocity.add(vector);
     }
 

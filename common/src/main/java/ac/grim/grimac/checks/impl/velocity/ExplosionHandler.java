@@ -38,6 +38,7 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
     private boolean explosionPointThree = false;
 
     private double offsetToFlag;
+    private boolean disableEngine;
 
     public ExplosionHandler(GrimPlayer player) {
         super(player);
@@ -140,6 +141,8 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
     }
 
     public void handlePredictionAnalysis(double offset) {
+        if (disableEngine) return;
+
         if (player.firstBreadExplosion != null) {
             player.firstBreadExplosion.offset = Math.min(player.firstBreadExplosion.offset, offset);
         }
@@ -162,6 +165,8 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
+        if (disableEngine) return;
+
         double offset = predictionComplete.getOffset();
 
         boolean wasZero = explosionPointThree;
@@ -257,5 +262,6 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
     @Override
     public void onReload(ConfigManager config) {
         offsetToFlag = config.getDoubleElse("Explosion.threshold", 0.00001);
+        disableEngine = config.getBooleanElse("Explosion.disable-engine", false);
     }
 }
