@@ -85,7 +85,6 @@ Simulation:
     # Violation level threshold for setback
     # 1 for old behavior
     setback-violation-threshold: 1
-    disable-liquid-push: false
 
 # Checks to see if a player entered a block during a movement
 Phase:
@@ -119,6 +118,7 @@ NoSlow:
     setbackvl: 5
     # Decay's when the player uses an item AND is slowed by it
     decay: 0.05
+    disable-engine: true
 
 Knockback:
     # How much should we multiply total advantage by when the player is legit
@@ -140,6 +140,39 @@ Explosion:
     threshold: 0.001
     setbackvl: 3
     disable-engine: false
+
+
+MultiActionsA:
+    disable-engine: true
+
+MultiActionsB:
+    disable-engine: true
+
+MultiActionsC:
+    disable-engine: true
+
+MultiActionsD:
+    disable-engine: true
+
+MultiActionsE:
+    disable-engine: true
+
+
+SprintB:
+    disable-engine: true
+
+SprintC:
+    disable-engine: true
+
+SprintD:
+    disable-engine: true
+
+SprintE:
+    disable-engine: true
+
+SprintG:
+    disable-engine: true
+
 
 TimerA:
     setbackvl: 10

@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.sprint;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
@@ -14,18 +15,25 @@ public class SprintG extends Check implements PostPredictionCheck {
         super(player);
     }
 
+    private boolean disableEngine;
+
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
+        if (disableEngine) return;
         if (player.wasTouchingWater && (player.wasWasTouchingWater || player.getClientVersion() == ClientVersion.V_1_21_4)
                 && !player.wasEyeInWater && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13)
                 && player.wasLastPredictionCompleteChecked && predictionComplete.isChecked()
-                && !EntityTypes.isTypeInstanceOf(player.getVehicleType(), EntityTypes.CAMEL)
-                && !player.isSwimming) {
-            if (player.isSprinting) {
+                && !EntityTypes.isTypeInstanceOf(player.getVehicleType(), EntityTypes.CAMEL)) {
+            if (player.isSprinting && !player.isSwimming) {
                 flagAndAlertWithSetback();
             } else {
                 reward();
             }
         }
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("SprintG.disable-engine", false);
     }
 }

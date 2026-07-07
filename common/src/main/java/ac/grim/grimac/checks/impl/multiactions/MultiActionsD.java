@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.multiactions;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
@@ -9,12 +10,16 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 
 @CheckData(name = "MultiActionsD", stableKey = "grim.multiactions.inventory_close_while_moving", description = "Closed inventory while moving")
 public class MultiActionsD extends Check implements PacketCheck {
+
+    private boolean disableEngine;
+
     public MultiActionsD(GrimPlayer player) {
         super(player);
     }
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (disableEngine) return;
         if (event.getPacketType() != PacketType.Play.Client.CLOSE_WINDOW) return;
         if (player.serverOpenedInventoryThisTick) return;
 
@@ -25,5 +30,10 @@ public class MultiActionsD extends Check implements PacketCheck {
         // look like they are still open (desynced),
         // and it can cause incompatibility issues with plugins
         flagAndAlert(verbose);
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("MultiActionsD.disable-engine", false);
     }
 }

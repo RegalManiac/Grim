@@ -161,8 +161,6 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
     }
 
     public void handlePredictionAnalysis(double offset) {
-        if (disableEngine) return;
-
         if (player.firstBreadKB != null) {
             player.firstBreadKB.offset = Math.min(player.firstBreadKB.offset, offset);
         }
@@ -174,8 +172,6 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (disableEngine) return;
-
         double offset = predictionComplete.getOffset();
         if (!predictionComplete.isChecked() || predictionComplete.getData().isTeleport()) {
             forceExempt();
@@ -208,13 +204,18 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
 
         if (player.likelyKB != null) {
             if (player.likelyKB.offset > offsetToFlag) {
+                if (disableEngine) {
+                    reward();
+                    return;
+                }
+
                 threshold = Math.min(threshold + player.likelyKB.offset, ceiling);
-                if (player.likelyKB.isSetback) { // Don't increase violations if this velocity was setback, just teleport and resend them velocity.
+                if (player.likelyKB.isSetback) {
                     if (!isNoSetbackPermission()) {
                         player.getSetbackTeleportUtil().executeViolationSetback();
                     }
                 } else if (flagAndAlert(player.likelyKB.offset == Integer.MAX_VALUE ? "ignored knockback"
-                        : "o: " + formatOffset(player.likelyKB.offset))) { // This velocity was sent by the server.
+                        : "o: " + formatOffset(player.likelyKB.offset))) {
                     if (player.likelyKB.offset >= immediate || threshold >= maxAdv) {
                         setbackIfAboveSetbackVL();
                     }

@@ -141,8 +141,6 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
     }
 
     public void handlePredictionAnalysis(double offset) {
-        if (disableEngine) return;
-
         if (player.firstBreadExplosion != null) {
             player.firstBreadExplosion.offset = Math.min(player.firstBreadExplosion.offset, offset);
         }
@@ -165,8 +163,6 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (disableEngine) return;
-
         double offset = predictionComplete.getOffset();
 
         boolean wasZero = explosionPointThree;
@@ -209,6 +205,10 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
         // 100% known kb was taken
         if (player.likelyExplosions != null && !player.compensatedEntities.self.isDead) {
             if (player.likelyExplosions.offset > offsetToFlag) {
+                if (disableEngine) {
+                    reward();
+                    return;
+                }
                 flagAndAlertWithSetback(player.likelyExplosions.offset == Integer.MAX_VALUE ? "ignored explosion" : "o: " + formatOffset(offset));
             } else {
                 reward();

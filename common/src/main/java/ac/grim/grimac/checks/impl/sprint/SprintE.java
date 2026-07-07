@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.sprint;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
@@ -18,6 +19,8 @@ public class SprintE extends Check implements PostPredictionCheck {
         super(player);
     }
 
+    private boolean disableEngine;
+
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacketType() == PacketType.Play.Client.ENTITY_ACTION) {
@@ -29,6 +32,7 @@ public class SprintE extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
+        if (disableEngine) return;
         if (!predictionComplete.isChecked()) return;
 
         if (wasHardHorizontalCollision && !startedSprintingThisTick && !player.uncertaintyHandler.isNearGlitchyBlock
@@ -44,5 +48,10 @@ public class SprintE extends Check implements PostPredictionCheck {
 
         wasHardHorizontalCollision = player.horizontalCollision && !player.softHorizontalCollision && player.wasLastPredictionCompleteChecked;
         startedSprintingThisTick = false;
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("SprintE.disable-engine", false);
     }
 }

@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.multiactions;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
@@ -14,6 +15,9 @@ import java.util.StringJoiner;
 
 @CheckData(name = "MultiActionsC", stableKey = "grim.multiactions.inventory_click_while_moving", description = "Clicked in inventory while moving")
 public class MultiActionsC extends Check implements PacketCheck {
+
+    private boolean disableEngine;
+
     public MultiActionsC(GrimPlayer player) {
         super(player);
     }
@@ -39,6 +43,7 @@ public class MultiActionsC extends Check implements PacketCheck {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (disableEngine) return;
         if (event.getPacketType() != PacketType.Play.Client.CLICK_WINDOW) return;
         if (player.serverOpenedInventoryThisTick) return;
 
@@ -49,5 +54,10 @@ public class MultiActionsC extends Check implements PacketCheck {
             event.setCancelled(true);
             player.onPacketCancel();
         }
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("MultiActionsC.disable-engine", false);
     }
 }

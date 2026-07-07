@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.sprint;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
@@ -14,6 +15,7 @@ import static com.github.retrooper.packetevents.protocol.potion.PotionTypes.BLIN
 @CheckData(name = "SprintD", stableKey = "grim.sprint.blindness", description = "Started sprinting while having blindness", setback = 5, experimental = true)
 public class SprintD extends Check implements PostPredictionCheck {
     public boolean startedSprintingBeforeBlind = false;
+    private boolean disableEngine;
 
     public SprintD(GrimPlayer player) {
         super(player);
@@ -30,10 +32,16 @@ public class SprintD extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (player.compensatedEntities.self.hasPotionEffect(BLINDNESS) && !startedSprintingBeforeBlind) {
-            if (player.isSprinting) {
+        if (disableEngine) return;
+        if (player.compensatedEntities.self.hasPotionEffect(BLINDNESS)) {
+            if (player.isSprinting && !startedSprintingBeforeBlind) {
                 flagAndAlertWithSetback();
             } else reward();
         }
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("SprintD.disable-engine", false);
     }
 }

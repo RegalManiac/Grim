@@ -124,9 +124,49 @@ What makes Grim stand out against other anticheats?
 * All systems are designed to be highly secure and mathematically impossible to bypass
 * For example, the prediction engine knows all possible movements and cannot be bypassed
 
-### Velocity patch
+### Velocity patch (Extra settings)
 
 * To enable custom settings add this in your config file:
-* In Simulation parameter: disable-liquid-push: true/false
+* In NoSlow parameter: disable-engine: true/false
 * In Knockback parameter: disable-engine: true/false
 * In Explosion parameter: disable-engine: true/false
+* And another changes. Add this to config:
+
+
+* MultiActionsA:
+disable-engine: true/false
+
+* MultiActionsB:
+disable-engine: true/false
+
+* MultiActionsC:
+disable-engine: true/false
+
+* MultiActionsD:
+disable-engine: true/false
+
+* MultiActionsE:
+disable-engine: true/false
+
+
+* You also need to change these settings for MultiActions
+* reset-item-usage-on-item-update: true -> false
+* reset-item-usage-on-attack: true -> false
+* reset-item-usage-on-slot-change: true -> false
+* reset-item-usage-on-item-use: true -> false
+
+
+* SprintB:
+disable-engine: true/false
+
+* SprintC:
+disable-engine: true/false
+
+* SprintD:
+disable-engine: true/false
+
+* SprintE:
+disable-engine: true/false
+
+* SprintG:
+disable-engine: true/false

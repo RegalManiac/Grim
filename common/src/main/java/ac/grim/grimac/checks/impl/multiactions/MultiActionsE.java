@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.multiactions;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
@@ -14,6 +15,7 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 @CheckData(name = "MultiActionsE", stableKey = "grim.multiactions.swing_while_using", description = "Swinging while using an item", experimental = true)
 public class MultiActionsE extends Check implements PacketCheck {
     private boolean dropping;
+    private boolean disableEngine;
 
     public MultiActionsE(GrimPlayer player) {
         super(player);
@@ -21,6 +23,7 @@ public class MultiActionsE extends Check implements PacketCheck {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (disableEngine) return;
         if (!dropping && player.packetStateData.isSlowedByUsingItem() && (player.packetStateData.lastSlotSelected == player.packetStateData.getSlowedByUsingItemSlot() || player.packetStateData.itemInUseHand == InteractionHand.OFF_HAND) && event.getPacketType() == PacketType.Play.Client.ANIMATION) {
             // this is possible to false on 1.7
             if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_7_10)) {
@@ -41,5 +44,10 @@ public class MultiActionsE extends Check implements PacketCheck {
             DiggingAction action = new WrapperPlayClientPlayerDigging(event).getAction();
             dropping = action == DiggingAction.DROP_ITEM || action == DiggingAction.DROP_ITEM_STACK;
         }
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("MultiActionsE.disable-engine", false);
     }
 }

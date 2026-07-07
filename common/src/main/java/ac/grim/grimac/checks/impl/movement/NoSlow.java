@@ -16,6 +16,7 @@ public class NoSlow extends Check implements PostPredictionCheck {
     public boolean flaggedLastTick = false;
     private double offsetToFlag;
     private double bestOffset = 1;
+    private boolean disableEngine;
 
     public NoSlow(GrimPlayer player) {
         super(player);
@@ -23,6 +24,7 @@ public class NoSlow extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
+        if (disableEngine) return;
         if (!predictionComplete.isChecked()) return;
 
         // If the player was using an item for certain, and their predicted velocity had a flipped item
@@ -53,5 +55,6 @@ public class NoSlow extends Check implements PostPredictionCheck {
     @Override
     public void onReload(ConfigManager config) {
         offsetToFlag = config.getDoubleElse(getConfigName() + ".threshold", 0.001);
+        disableEngine = config.getBooleanElse("NoSlow.disable-engine", false);
     }
 }

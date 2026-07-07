@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.multiactions;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
@@ -17,8 +18,11 @@ public class MultiActionsA extends Check implements PacketCheck {
         super(player);
     }
 
+    private boolean disableEngine;
+
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (disableEngine) return;
         if (player.packetStateData.isSlowedByUsingItem() && (player.packetStateData.lastSlotSelected == player.packetStateData.getSlowedByUsingItemSlot() || player.packetStateData.itemInUseHand == InteractionHand.OFF_HAND)) {
             if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY && new WrapperPlayClientInteractEntity(event).getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK
                     || event.getPacketType() == PacketType.Play.Client.ATTACK || event.getPacketType() == PacketType.Play.Client.SPECTATE_ENTITY
@@ -29,5 +33,10 @@ public class MultiActionsA extends Check implements PacketCheck {
                 }
             }
         }
+    }
+
+    @Override
+    public void onReload(ConfigManager config) {
+        disableEngine = config.getBooleanElse("MultiActionsA.disable-engine", false);
     }
 }
