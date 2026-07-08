@@ -394,22 +394,6 @@ public class PredictionEngine {
     public Set<VectorData> fetchPossibleStartTickVectors(GrimPlayer player) {
         // Swim hop, riptide bounce, climbing, slime block bounces, knockback
         Set<VectorData> velocities = player.getPossibleVelocities();
-
-        if (GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("Simulation.disable-liquid-push", false)) {
-            if (player.appliedLiquidPush != null && player.appliedLiquidPush.lengthSquared() > 0) {
-                Set<VectorData> branchedPaths = new HashSet<>();
-                for (VectorData vd : velocities) {
-                    Vector3dm noPush = new Vector3dm(
-                            vd.vector.getX() - player.appliedLiquidPush.getX(),
-                            vd.vector.getY() - player.appliedLiquidPush.getY(),
-                            vd.vector.getZ() - player.appliedLiquidPush.getZ()
-                    );
-                    branchedPaths.add(new VectorData(noPush, vd.lastVector, vd.vectorType));
-                }
-                velocities.addAll(branchedPaths);
-            }
-        }
-        player.appliedLiquidPush = new Vector3dm();
         // Packet stuff is done first
         addExplosionToPossibilities(player, velocities);
 
